@@ -55,5 +55,6 @@ export interface AIAction {
 }
 
 export interface AIResponse {
+  explanation: string;
   actions: AIAction[];
 }
