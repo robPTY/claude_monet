@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  excalidraw-mcp:
+    image: ghcr.io/yctimlin/mcp_excalidraw-canvas:latest
+    ports:
+      - "3001:3001"
+    environment:
+      - EXPRESS_SERVER_URL=http://localhost:3001
+      - ENABLE_CANVAS_SYNC=true
+    container_name: excalidraw-mcp
+    restart: unless-stopped
+
+  backend:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - MCP_SERVER_URL=http://excalidraw-mcp:3001
+      - CLAUDE_API_KEY=${CLAUDE_API_KEY}
+    depends_on:
+      - excalidraw-mcp
+    container_name: claude-monet-backend
+    restart: unless-stopped
+    volumes:
+      - .:/app
+      - /app/node_modules
